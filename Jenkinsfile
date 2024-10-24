@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Cloner le dépôt
-                git 'https://github.com/Mohamed-KBIBECH/DevSecOps.git'
+                git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
         stage('Build') {
