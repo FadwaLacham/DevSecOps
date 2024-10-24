@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-stage('OWASP Dependency-Check Vulnerabilities') {
+stage('SCA with Dependency-Check') {
     steps {
         dependencyCheck additionalArguments: '''\
             -o './' \
@@ -18,11 +18,12 @@ stage('OWASP Dependency-Check Vulnerabilities') {
             --prettyPrint
         ''', odcInstallation: 'OWASP Dependency-Check'
         
+        // Publish the Dependency-Check report
         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
     }
 }
 
-        stage('ZAP Security Scan') {
+       stage('ZAP Security Scan') {
     steps {
         script {
             def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
