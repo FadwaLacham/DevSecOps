@@ -11,17 +11,11 @@ pipeline {
 
 stage('SCA with Dependency-Check') {
     steps {
-        dependencyCheck additionalArguments: '''\
-            -o './' \
-            -s './' \
-            -f 'ALL' \
-            --prettyPrint
-        ''', odcInstallation: 'OWASP Dependency-Check'
-        
-        // Publish the Dependency-Check report
-        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        echo 'Analyse de la composition des sources avec OWASP Dependency-Check...'
+        bat '"C:\dependency-check\bin" --project "demo" --scan . --format HTML --out dependency-check-report.html --nvdApiKey 181c8fc5-2ddc-4d15-99bf-764fff8d50dc --disableAsse'
     }
 }
+
 
        stage('ZAP Security Scan') {
     steps {
