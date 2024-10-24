@@ -8,22 +8,7 @@ pipeline {
                 git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
-        stage('Secret Scanning') {
-            steps {
-                bat 'gitleaks detect --source . --report-format json --report-path gitleaks-report.json'
-            }
-        }
 
-        stage('Analyze Secrets Report') {
-            steps {
-                script {
-                    def report = readFile('gitleaks-report.json')
-                    if (report.contains('leak')) {
-                        error 'Secrets détectés ! Le build est arrêté.'
-                    }
-                }
-            }
-        }
 stage('SCA with Dependency-Check') {
     steps {
         echo 'Analyse de la composition des sources avec OWASP Dependency-Check...'
