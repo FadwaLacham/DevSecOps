@@ -25,7 +25,7 @@ pipeline {
     post {
         always {
             // Generate report
-            bat 'curl "http://localhost:8081/OTHER/core/other/htmlreport/" > zap_report.html'
+            bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report.html'
         }
     }
 }
