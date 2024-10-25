@@ -15,11 +15,11 @@ stage('ZAP Security Scan') {
             
             // Start spider scan
             bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'timeout /t 60' // Wait for 60 seconds
+            bat 'ping localhost -n 60 > nul' // Wait for 60 seconds
             
             // Start active scan
             bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'timeout /t 300' // Wait for 300 seconds
+            bat 'ping localhost -n 300 > nul' // Wait for 300 seconds
         }
     }
     post {
@@ -29,6 +29,7 @@ stage('ZAP Security Scan') {
         }
     }
 }
+
 
 
 
