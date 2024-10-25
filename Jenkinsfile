@@ -12,23 +12,24 @@ stage('ZAP Security Scan') {
     steps {
         script {
             def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
-
+            
             // Start spider scan
-            bat "curl \"http://localhost:8081/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
+            bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
             bat 'timeout /t 60' // Wait for 60 seconds
-
+            
             // Start active scan
-            bat "curl \"http://localhost:8081/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
+            bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
             bat 'timeout /t 300' // Wait for 300 seconds
         }
     }
     post {
         always {
             // Generate report
-            bat 'curl "http://localhost:8081/OTHER/core/other/htmlreport/" > zap_report1.html'
+            bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report.html'
         }
     }
 }
+
 
 
          stage('Secret Scanning') {
