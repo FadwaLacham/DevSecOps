@@ -12,37 +12,24 @@ stage('ZAP Security Scan') {
     steps {
         script {
             def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
-            
+
             // Start spider scan
-            bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
-            
-            // Wait for spider scan to complete
-            def spiderStatus = ""
-            while (spiderStatus != "100") {
-                bat 'timeout /t 5' // Poll every 5 seconds
-                spiderStatus = bat(script: "curl \"http://localhost:8095/JSON/spider/view/status/\" -s | jq -r '.status'", returnStdout: true).trim()
-                echo "Spider scan status: ${spiderStatus}%"
-            }
-            
+            bat "curl \"http://localhost:8081/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
+            bat 'timeout /t 60' // Wait for 60 seconds
+
             // Start active scan
-            bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
-            
-            // Wait for active scan to complete
-            def ascanStatus = ""
-            while (ascanStatus != "100") {
-                bat 'timeout /t 5' // Poll every 5 seconds
-                ascanStatus = bat(script: "curl \"http://localhost:8095/JSON/ascan/view/status/\" -s | jq -r '.status'", returnStdout: true).trim()
-                echo "Active scan status: ${ascanStatus}%"
-            }
+            bat "curl \"http://localhost:8081/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
+            bat 'timeout /t 300' // Wait for 300 seconds
         }
     }
     post {
         always {
             // Generate report
-            bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report.html'
+            bat 'curl "http://localhost:8081/OTHER/core/other/htmlreport/" > zap_report1.html'
         }
     }
 }
+
 
          stage('Secret Scanning') {
             steps {
