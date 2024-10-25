@@ -8,18 +8,32 @@ pipeline {
                 git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
-               stage('ZAP Security Scan') {
+stage('ZAP Security Scan') {
     steps {
         script {
             def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
             
             // Start spider scan
             bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'timeout /t 60' // Wait for 60 seconds
+            
+            // Wait for spider scan to complete
+            def spiderStatus = ""
+            while (spiderStatus != "100") {
+                bat 'timeout /t 5' // Poll every 5 seconds
+                spiderStatus = bat(script: "curl \"http://localhost:8095/JSON/spider/view/status/\" -s | jq -r '.status'", returnStdout: true).trim()
+                echo "Spider scan status: ${spiderStatus}%"
+            }
             
             // Start active scan
             bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'timeout /t 300' // Wait for 300 seconds
+            
+            // Wait for active scan to complete
+            def ascanStatus = ""
+            while (ascanStatus != "100") {
+                bat 'timeout /t 5' // Poll every 5 seconds
+                ascanStatus = bat(script: "curl \"http://localhost:8095/JSON/ascan/view/status/\" -s | jq -r '.status'", returnStdout: true).trim()
+                echo "Active scan status: ${ascanStatus}%"
+            }
         }
     }
     post {
