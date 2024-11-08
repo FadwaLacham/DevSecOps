@@ -8,24 +8,17 @@ pipeline {
                 git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
-stage('ZAP Security Scan') {
+stage(’ZAP Security Scan’) {
     steps {
         script {
-            def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
-            
-            // Start spider scan
-            bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'ping localhost -n 60 > nul' // Wait for 60 seconds
-            
-            // Start active scan
-            bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
-            bat 'ping localhost -n 300 > nul' // Wait for 300 seconds
+            def appUrl = ’https://ed3a-105-73-96-62.ngrok-free.app’
+            bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\sleep(60)"
+            bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\insleep(300)"
         }
     }
     post {
         always {
-            // Generate report
-            bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report.html'
+            bat ’curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report1.html’
         }
     }
 }
