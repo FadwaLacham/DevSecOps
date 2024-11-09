@@ -11,19 +11,19 @@ pipeline {
         stage('Build') {
             steps {
                 // Construire le projet Maven
-                sh 'mvn clean install'
+                bat 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
                 // Exécuter les tests
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
                 // Déploiement (peut être remplacé par votre stratégie de déploiement)
-                sh 'echo "Déploiement de l\'application..."'
+                bat 'echo "Déploiement de l\'application..."'
             }
         }
     }
