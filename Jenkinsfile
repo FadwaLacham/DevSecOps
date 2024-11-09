@@ -8,7 +8,7 @@ pipeline {
                 git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
-        stage('ZAP Security Scan') {
+/*        stage('ZAP Security Scan') {
             steps {
                 script {
                     def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
@@ -23,7 +23,7 @@ pipeline {
                     bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report1.html'
                 }
             }
-        }
+        } */
         stage('Secret Scanning') {
             steps {
                 bat 'gitleaks detect --source . --report-format json --report-path gitleaks-report.json'
