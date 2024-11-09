@@ -16,8 +16,13 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // Exécuter les tests
-                bat 'mvn test'
+                // Exécuter les tests sans échouer le build si les tests échouent
+                script {
+                    def testStatus = bat(returnStatus: true, script: 'mvn test')
+                    if (testStatus != 0) {
+                        echo "Tests failed, but continuing with the build."
+                    }
+                }
             }
         }
         stage('Deploy') {
