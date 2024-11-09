@@ -32,51 +32,7 @@ stage('SCA with Dependency-Check') {
     }
 }
 
-
-stage('ZAP Security Scan') {
-    steps {
-        script {
-            def appUrl = 'https://ed3a-105-73-96-62.ngrok-free.app'
-
-            // Start spider scan
-            bat "curl \"http://localhost:8095/JSON/spider/action/scan/?url=${appUrl}&recurse=true\""
-
-            // Poll for spider scan status
-            def spiderStatus
-            while (true) {
-                spiderStatus = bat(script: 'curl -s "http://localhost:8095/JSON/spider/view/status/"', returnStdout: true).trim()
-                if (spiderStatus == '100') {
-                    break
-                }
-                echo "Spider scan progress: ${spiderStatus}%"
-                bat 'timeout /t 5' // Wait for 5 seconds before checking again
-            }
-
-            // Start active scan
-            bat "curl \"http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true\""
-
-            // Poll for active scan status
-            def ascanStatus
-            while (true) {
-                ascanStatus = bat(script: 'curl -s "http://localhost:8095/JSON/ascan/view/status/"', returnStdout: true).trim()
-                if (ascanStatus == '100') {
-                    break
-                }
-                echo "Active scan progress: ${ascanStatus}%"
-                bat 'timeout /t 5' // Wait for 5 seconds before checking again
-            }
-        }
-    }
-    post {
-        always {
-            // Generate report
-            bat 'curl "http://localhost:8095/OTHER/core/other/htmlreport/" > zap_report.html'
-        }
-    }
-}
-
-
-        stage('Build') {
+      stage('Build') {
             steps {
                 // Construire le projet Maven
                 sh 'mvn clean install'
