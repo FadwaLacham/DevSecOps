@@ -8,8 +8,10 @@ pipeline {
                 git 'https://github.com/FadwaLacham/DevSecOps.git'
             }
         }
-         stage('Secret Scanning') {
+
+        stage('Secret Scanning') {
             steps {
+                // Exécution de Gitleaks pour la détection des secrets dans le code source
                 bat 'gitleaks detect --source . --report-format json --report-path gitleaks-report.json'
             }
         }
@@ -25,29 +27,31 @@ pipeline {
             }
         }
 
-stage('SCA with Dependency-Check') {
-    steps {
-        echo 'Analyse de la composition des sources avec OWASP Dependency-Check...'
-        bat '"C:\\dependency-check\\bin\\dependency-check.bat" --project "demo" --scan . --format HTML --out dependency-check-report.html --nvdApiKey 181c8fc5-2ddc-4d15-99bf-764fff8d50dc --disableAsse'
-    }
-}
-
-      stage('Build') {
+        stage('SCA with Dependency-Check') {
             steps {
-                // Construire le projet Maven
-                sh 'mvn clean install'
+                echo 'Analyse de la composition des sources avec OWASP Dependency-Check...'
+                bat '"C:\\dependency-check\\bin\\dependency-check.bat" --project "demo" --scan . --format HTML --out dependency-check-report.html --nvdApiKey 181c8fc5-2ddc-4d15-99bf-764fff8d50dc --disableAsse'
             }
         }
+
+        stage('Build') {
+            steps {
+                // Construire le projet Maven en utilisant la commande 'bat' pour Windows
+                bat 'mvn clean install'
+            }
+        }
+
         stage('Test') {
             steps {
-                // Exécuter les tests
-                sh 'mvn test'
+                // Exécuter les tests en utilisant 'bat'
+                bat 'mvn test'
             }
         }
+
         stage('Deploy') {
             steps {
                 // Déploiement (peut être remplacé par votre stratégie de déploiement)
-                sh 'echo "Déploiement de l\'application..."'
+                bat 'echo "Déploiement de l\'application..."'
             }
         }
     }
@@ -62,7 +66,7 @@ stage('SCA with Dependency-Check') {
             echo 'Le build a réussi !'
         }
         failure {
-            // Notifier en cas d'échec
+            // Notifier en cas d\'échec
             echo 'Le build a échoué.'
         }
     }
